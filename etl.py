@@ -15,6 +15,9 @@ os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
 
 
 def create_spark_session():
+    """
+    Function to create standard Spark session
+    """
     spark = SparkSession \
         .builder \
         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
@@ -23,6 +26,17 @@ def create_spark_session():
 	
 	
 def process_song_data(spark, input_data, output_data):
+    """
+    Loads song data from S3 and create:
+    - song table
+    - artist table
+    and load them back to S3 in parquet format
+    
+    INPUTS: 
+    spark - spark session
+    input_data - s3 location of datasets
+    output_data - s3 location for tables
+    """
     # get filepath to song data file
     song_data = input_data + 'song_data/*/*/*/*.json'
     #song_data = input_data + 'song_data/A/B/C/TRABCEI128F424C983.json'
@@ -39,14 +53,12 @@ def process_song_data(spark, input_data, output_data):
     songs_table.write.partitionBy('year', 'artist_id').parquet(os.path.join(output_data, 'output/songs/songs.parquet'), 'overwrite')
 
     # extract columns to create artists table
-    artists_table = df.select('artist_id', 'artist_name', 'artist_location', 
-                              'artist_latitude', 'artist_longitude') \
+    artists_table = df.select('artist_id', 
+			      col('artist_name').alias('name'), 
+			      col('artist_location').alias('location'),
+			      col('artist_latitude').alias('latitude'), 
+			      col('artist_longitude').alias('longitude')) \
                               .dropDuplicates()
-    
-    artists_table = artists_table.withColumnRenamed('artist_name', 'name') \
-                                 .withColumnRenamed('artist_location', 'location') \
-                                 .withColumnRenamed('artist_latitude', 'latitude') \
-                                 .withColumnRenamed('artist_longitude', 'longitude')
     
     artists_table.createOrReplaceTempView('artists')
 
@@ -69,14 +81,12 @@ def process_log_data(spark, input_data, output_data):
                            'sessionId', 'location', 'userAgent')
 
     # extract columns for users table
-    users_table = df.select('userId', 'firstName', 'lastName', 
+    users_table = df.select(col('userId').alias('userId'), 
+			    col('firstName').alias('first_name'), 
+			    col('lastName').alias('last_name'), 
                             'gender', 'level') \
                             .dropDuplicates()
-    
-    users_table = users_table.withColumnRenamed('userId', 'user_id') \
-                             .withColumnRenamed('firstName', 'first_name') \
-                             .withColumnRenamed('lastName', 'last_name')
-    
+        
     users_table.createOrReplaceTempView('users')
     
     # write users table to parquet files
