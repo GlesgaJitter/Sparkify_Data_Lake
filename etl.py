@@ -27,7 +27,7 @@ def create_spark_session():
 	
 def process_song_data(spark, input_data, output_data):
     """
-    Loads song data from S3 and create:
+    Loads song data from S3 and creates:
     - song table
     - artist table
     and load them back to S3 in parquet format
@@ -36,6 +36,9 @@ def process_song_data(spark, input_data, output_data):
     spark - spark session
     input_data - s3 location of datasets
     output_data - s3 location for tables
+    
+    OUTPUTS:
+    None
     """
     # get filepath to song data file
     song_data = input_data + 'song_data/*/*/*/*.json'
@@ -68,6 +71,21 @@ def process_song_data(spark, input_data, output_data):
 	
 	
 def process_log_data(spark, input_data, output_data):
+    """
+    Loads song data from S3 and creates:
+    - users table
+    - time table
+    - songplays table
+    and load them back to S3 in parquet format
+    
+    INPUTS: 
+    spark - spark session
+    input_data - s3 location of datasets
+    output_data - s3 location for tables
+    
+    OUTPUTS:
+    None
+    """
     # get filepath to log data file
     log_data = input_data + 'log_data/*/*/*.json' 
     #log_data = input_data + 'log_data/2018/11/2018-11-12-events.json'
@@ -140,6 +158,9 @@ def process_log_data(spark, input_data, output_data):
 		
 
 def main():
+    """
+    Main function in which S3 source and target locations are defined
+    """
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
     output_data = "s3://udacity-data-lake-sparkify/"
