@@ -120,7 +120,7 @@ spark.sql('''SELECT * FROM artists LIMIT 10''').show()
 |AR5EH4F1187B98FC65|Berlin Symphony O...|                    |     null|     null|
 |ARSMEBG1187FB4D02B|         Kevin Ayers|Herne Bay, Kent, ...| 51.37121|   1.1251|
 |ARDIJLO1187FB3CE44|         Sandie Shaw|Dagenham, Essex, ...|     null|     null|
-|ARD0FN11187B9B25CD|         Bobby Darin|New York, NY [The...| 40.85715|-73.85678|
+|ARD0FN11187B9B25CD|         Bobby Darin|New York, NY \[The...| 40.85715|-73.85678|
 |ARRL7WS1187FB576F1|  Ferrante & Teicher|                    |     null|     null|
 |ARCII0J1187FB3A1B4|   The Marx Brothers|New York City, Ne...| 40.71455|-74.00712|
 |ARUONH81187FB4FBB4|    ClickClickDecker|                    |     null|     null|
