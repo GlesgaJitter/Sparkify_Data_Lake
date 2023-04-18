@@ -161,6 +161,7 @@ def process_log_data(spark, input_data, output_data):
     
     # create datetime column from original timestamp column
     get_datetime = udf(lambda x: str(datetime.fromtimestamp(int(x) / 1000)))
+    nextSong_df = nextSong_df.filter(col('ts').isNotNull())
     nextSong_df = nextSong_df.withColumn('datetime', get_datetime(nextSong_df.ts))
     
     # extract columns to create time table
