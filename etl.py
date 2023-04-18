@@ -113,9 +113,30 @@ def process_log_data(spark, input_data, output_data):
     # get filepath to log data file
     log_data = input_data + 'log_data/*/*/*.json' 
     #log_data = input_data + 'log_data/2018/11/2018-11-12-events.json'
+	
+    schema = StructType() \
+	.add("artist", StringType(), True) \
+	.add("auth", StringType(), True) \
+	.add("firstName", StringType(), True) \
+	.add("gender", StringType(), True) \
+	.add("itemInSession", IntegerType(), True) \
+	.add("lastName", StringType(), True) \
+	.add("length", DoubleType(), True) \
+	.add("level", StringType(), True) \
+	.add("location", StringType(), True) \
+	.add("method", StringType(), True) \
+	.add("page", StringType(), True) \
+	.add("registration", IntegerType(), True) \
+	.add("sessionId", StringType(), True) \
+	.add("song", StringType(), True) \
+	.add("status", StringType(), True) \
+	.add("ts", IntegerType(), True) \
+	.add("userAgent", StringType(), True) \
+	.add("userId", StringType(), True)
 
-    # read log data file
-    df = spark.read.json(log_data)
+	
+    # read song data file
+    df = spark.read.schema(schema).json(log_data)
     
     # filter by actions for song plays
     nextSong_df = df.filter(df.page == 'NextSong') \
