@@ -1,10 +1,15 @@
 import configparser
 from datetime import datetime
 import os
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
 from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format
 from pyspark.sql.functions import monotonically_increasing_id
+
+from pyspark.sql.types import StructField
+from pyspark.sql.types import StructType
+from pyspark.sql.types import IntegerType, StringType, DoubleType
 
 
 config = configparser.ConfigParser()
@@ -50,8 +55,21 @@ def process_song_data(spark, input_data, output_data):
     song_data = input_data + 'song_data/*/*/*/*.json'
     #song_data = input_data + 'song_data/A/B/C/TRABCEI128F424C983.json'
         
+    schema = StructType() \
+	.add("num_songs", IntegerType(), True) \
+	.add("artist_id", StringType(), True) \
+	.add("artist_latitude", DoubleType(), True) \
+	.add("artist_longitude", DoubleType(), True) \
+	.add("artist_location", StringType(), True) \
+	.add("artist_name", StringType(), True) \
+	.add("song_id", StringType(), True) \
+	.add("title", StringType(), True) \
+	.add("duration", DoubleType(), True) \
+	.add("year", IntegerType(), True)
+
+	
     # read song data file
-    df = spark.read.json(song_data)
+    df = spark.read.schema(schema).json(song_data)
 
     # extract columns to create songs table
     songs_table = df.select('song_id', 'title', 'artist_id', 'year', 
