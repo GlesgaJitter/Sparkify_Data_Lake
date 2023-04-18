@@ -154,7 +154,7 @@ def process_log_data(spark, input_data, output_data):
                            #.withColumn('weekday', dayofweek('datetime'))
     
     # write time table to parquet files partitioned by year and month
-    time_table.write.parquet(os.path.join(output_data, 'output/time/time.parquet'), 'overwrite')
+    time_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'output/time/time.parquet'), 'overwrite')
 
     # read in song data to use for songplays table
     #song_df = spark.read.json(input_data + 'song_data/*/*/*/*.json')
@@ -187,7 +187,7 @@ def main():
     """
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
-    output_data = "s3://udacity-data-lake-sparkify/"
+    output_data = "s3a://udacity-data-lake-sparkify/"
         
     process_song_data(spark, input_data, output_data)
     process_log_data(spark, input_data, output_data)
